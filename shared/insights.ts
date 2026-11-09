@@ -45,7 +45,8 @@ export function commuteInsight(target: CommuteRank, all: CommuteRank[]): Commute
 
   const slowerCloser = others
     .filter((o) => o.distanceKm < target.distanceKm && o.totalMinutes - target.totalMinutes >= MEANINGFUL_MINUTES)
-    .sort((a, b) => b.totalMinutes - a.totalMinutes || a.distanceKm - b.distanceKm)[0];
+    // Compare with the closest slower home: that is the one a renter would pick by distance.
+    .sort((a, b) => a.distanceKm - b.distanceKm)[0];
   if (slowerCloser) {
     const minutes = slowerCloser.totalMinutes - target.totalMinutes;
     return {

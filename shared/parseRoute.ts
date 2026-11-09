@@ -88,8 +88,8 @@ export function parseRoutesResponse(response: RoutesApiResponse, arriveByIso: st
     if (step.travelMode === 'TRANSIT' && step.transitDetails) {
       const td = step.transitDetails;
       const sd = td.stopDetails ?? {};
-      const dep = sd.departureTime ? Date.parse(sd.departureTime) : (cursor ?? arriveBy);
-      const arr = sd.arrivalTime ? Date.parse(sd.arrivalTime) : dep + ms;
+      const dep: number = sd.departureTime ? Date.parse(sd.departureTime) : (cursor ?? arriveBy);
+      const arr: number = sd.arrivalTime ? Date.parse(sd.arrivalTime) : dep + ms;
       cursor = arr;
       blocks.push({
         type: 'transit',
