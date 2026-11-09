@@ -1,0 +1,140 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  body {
+    @apply bg-mist font-sans text-base text-ink;
+  }
+  h1, h2, h3 {
+    /* One display weight for headings */
+    @apply font-semibold tracking-tight;
+  }
+  :focus-visible {
+    outline: 3px solid #2F6FED;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  .dark-surface :focus-visible, .evidence-panel :focus-visible {
+    outline-color: #8DDDD5;
+  }
+}
+
+@layer components {
+  /* Verified evidence values: monospace, tabular. Listing claims stay in Inter. */
+  .evidence {
+    @apply font-mono tabular-nums tracking-tight;
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-hairline bg-white px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-ink/40;
+  }
+  .pill-active {
+    @apply border-ink bg-ink text-white hover:border-ink;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-scout-dark text-white hover:bg-[#096a49];
+  }
+  .btn-secondary {
+    @apply btn border border-hairline bg-white text-ink hover:border-ink/40;
+  }
+  .btn-ghost-dark {
+    @apply btn border border-white/20 bg-white/5 text-white hover:bg-white/10;
+  }
+  .card {
+    @apply rounded-card border border-hairline bg-white;
+  }
+  .evidence-panel {
+    @apply rounded-card bg-midnight text-white;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+  .skeleton {
+    background: linear-gradient(90deg, #EDF1F5 0px, #F6F8FA 120px, #EDF1F5 240px);
+    background-size: 800px 100%;
+    @apply motion-safe:animate-shimmer;
+  }
+  .section-title {
+    @apply text-lg font-semibold;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.08em];
+  }
+}
+
+
+/* Early-arrival segment: hatched so it reads without color */
+.seg-early {
+  background-image: repeating-linear-gradient(135deg, #C3CCD6 0 6px, #DCE2E8 6px 12px);
+}
+
+/* Leaflet price pins */
+.price-pin {
+  background: transparent;
+  border: 0;
+}
+.price-pin span {
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff;
+  color: #0B1B2B;
+  font: 600 13px/1.4 Inter, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 1px 2px rgba(11,27,43,.12), 0 4px 12px rgba(11,27,43,.16);
+  border: 1px solid #E3E8EE;
+  transition: transform 150ms ease, background 150ms ease;
+}
+.price-pin.is-active span {
+  background: #0B1B2B;
+  color: #fff;
+  border-color: #0B1B2B;
+  transform: translate(-50%, -50%) scale(1.12);
+}
+.price-pin.is-saved span::after {
+  content: ' ♥';
+  color: #E5484D;
+}
+.campus-pin span {
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #0E9F6E;
+  color: #fff;
+  font: 600 12px/1.4 Inter, system-ui, sans-serif;
+  box-shadow: 0 4px 12px rgba(11,27,43,.2);
+}
+.leaflet-container {
+  font-family: Inter, system-ui, sans-serif;
+  background: #E9EEF2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
