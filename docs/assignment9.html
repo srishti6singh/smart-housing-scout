@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Assignment 9: Software Project. Smart Housing Scout</title>
 <style>
-  @page { size: Letter; margin: 0.7in 0.75in 0.8in; }
+  @page { size: Letter portrait; margin: 0.6in 0.7in; }
   :root {
     --ink: #0B1B2B; --muted: #4A5A6B; --faint: #6B7A8A; --line: #E3E8EE; --mist: #F6F8FA;
     --green: #0B7F58; --green-soft: #E6F6F0; --amber: #8A5A00; --amber-soft: #FEF4E2; --red: #B42328; --blue: #2F6FED;
@@ -25,7 +25,10 @@
   th, td { text-align: left; vertical-align: top; padding: 5pt 6pt; border-bottom: 1px solid var(--line); }
   thead th { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.05em; color: var(--faint); border-bottom: 1.5px solid var(--ink); }
   tr { page-break-inside: avoid; }
-  .section { page-break-before: always; }
+  /* Sections flow on; no forced page breaks, so pages are not half empty. */
+  .section { margin-top: 26pt; padding-top: 18pt; border-top: 1px solid var(--line); }
+  .section.first { margin-top: 18pt; }
+  .eyebrow, h2 { break-after: avoid; page-break-after: avoid; }
   .points { color: var(--faint); font-weight: 500; font-size: 10pt; }
   .eyebrow { font-size: 8pt; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); margin-bottom: 4pt; }
   .lede { font-size: 11.5pt; color: var(--muted); }
@@ -34,7 +37,8 @@
   .facts-title { font-size: 8pt; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 4pt; }
   .yours { border: 1.5px dashed #D9A43B; background: var(--amber-soft); border-radius: 10px; padding: 10pt 12pt; margin: 6pt 0 12pt; page-break-inside: avoid; }
   .yours b { color: var(--amber); }
-  .yours .lines { margin-top: 6pt; height: var(--h, 90pt); background: repeating-linear-gradient(transparent 0 19pt, #E9D3A6 19pt 20pt); }
+  /* Placeholders stay small: your text replaces them before submission. */
+  .yours .lines { margin-top: 6pt; height: calc(var(--h, 90pt) * 0.3); background: repeating-linear-gradient(transparent 0 19pt, #E9D3A6 19pt 20pt); }
   figure { margin: 6pt 0 14pt; page-break-inside: avoid; }
   figure img { display: block; max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
   figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 5pt; }
@@ -44,14 +48,14 @@
   .tag { display: inline-block; font-size: 7.5pt; font-weight: 600; padding: 1px 6px; border-radius: 99px; background: var(--green-soft); color: var(--green); }
   .tag.amber { background: var(--amber-soft); color: var(--amber); }
   .tag.red { background: #FDECEC; color: var(--red); }
-  .cover { height: 9.2in; display: flex; flex-direction: column; justify-content: space-between; }
-  .cover .brand { display: flex; align-items: center; gap: 10pt; }
-  .cover .logo { width: 34pt; height: 34pt; border-radius: 9pt; background: #0E9F6E; position: relative; }
-  .cover .logo::after { content: ""; position: absolute; right: -3pt; top: -3pt; width: 10pt; height: 10pt; border-radius: 50%; background: #F5A524; }
-  .meta { width: auto; font-size: 10pt; }
-  .meta td { border: 0; padding: 3pt 14pt 3pt 0; }
-  .meta td:first-child { color: var(--faint); }
-  .blank { display: inline-block; min-width: 2.4in; border-bottom: 1px solid var(--ink); }
+  .cover { text-align: center; padding: 10pt 0 4pt; }
+  .cover .logo { width: 40pt; height: 40pt; border-radius: 11pt; background: #0E9F6E; position: relative; margin: 0 auto 10pt; }
+  .cover .logo::after { content: ""; position: absolute; right: -3pt; top: -3pt; width: 11pt; height: 11pt; border-radius: 50%; background: #F5A524; }
+  .cover-name { font-size: 26pt; font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+  .cover-tag { font-size: 13pt; color: var(--muted); margin-top: 4pt; }
+  .cover .lede { margin: 6pt auto 0; max-width: 5.6in; font-size: 10.5pt; }
+  .prompt { columns: 2; column-gap: 16pt; font: 7.3pt/1.42 Inter, -apple-system, Arial, sans-serif; white-space: pre-wrap; background: var(--mist); border: 1px solid var(--line); border-radius: 8px; padding: 10pt 12pt; margin: 0 0 10pt; }
+  figure.full img { max-height: var(--mh, 3.7in); margin: 0 auto; }
   .diagram { display: grid; grid-template-columns: 1fr 22pt 1fr 22pt 1fr; align-items: center; margin: 8pt 0 12pt; page-break-inside: avoid; }
   .box { border: 1.5px solid var(--ink); border-radius: 10px; padding: 8pt 9pt; font-size: 8.5pt; line-height: 1.4; min-height: 1.45in; }
   .box.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
@@ -66,31 +70,16 @@
 <body>
 
 <!-- ============ COVER ============ -->
-<section class="cover">
-  <div>
-    <div class="brand"><div class="logo"></div><div><b style="font-size:12pt">Smart Housing Scout</b><br><span class="small">Rent with evidence, not claims.</span></div></div>
-  </div>
-  <div>
-    <div class="eyebrow">Assignment 9: Software Project</div>
-    <h1>Smart Housing Scout:<br>a rental search that checks every claim</h1>
-    <p class="lede">A web app for students who rent in Pittsburgh without seeing the home first. It ranks homes by real door-to-campus commute time, true monthly cost, and verified bathroom count, instead of what the listing says.</p>
-  </div>
-  <div>
-    <table class="meta">
-      <tr><td>Name</td><td><span class="blank">&nbsp;</span></td></tr>
-      <tr><td>Course</td><td><span class="blank">&nbsp;</span></td></tr>
-      <tr><td>Date</td><td><span class="blank">&nbsp;</span></td></tr>
-      <tr><td>Built with</td><td>React, TypeScript, Vite, Tailwind CSS, Leaflet, Node and Express. Code written by Claude (Anthropic) from my prompt.</td></tr>
-    </table>
-    <div class="facts" style="margin-top:14pt">
-      <div class="facts-title">How this document is marked</div>
-      <p>Grey boxes hold facts from the project: tables, numbers, and events that really happened. <b style="color:var(--amber)">Amber boxes marked YOUR TURN</b> are the parts the assignment requires in my own words, or as my own evidence. Screenshots were captured by Claude from the running app on Nov 9, 2026 and are labeled that way.</p>
-    </div>
-  </div>
-</section>
+<header class="cover">
+  <div class="logo"></div>
+  <div class="cover-name">Smart Housing Scout</div>
+  <div class="cover-tag">Rent with evidence, not claims.</div>
+  <div class="eyebrow" style="margin-top:18pt">Assignment 9: Software Project</div>
+  <p class="lede">A web app for students who rent in Pittsburgh without seeing the home first. It ranks homes by real door-to-campus commute time, true monthly cost, and verified bathroom count, instead of what the listing says.</p>
+</header>
 
 <!-- ============ Q1 ============ -->
-<section class="section">
+<section class="section first">
   <div class="eyebrow">Question 1</div>
   <h2>Functional decomposition <span class="points">(3 points)</span></h2>
   <p>The digital experience: an international student choosing an apartment in Pittsburgh, near Carnegie Mellon, before arriving in the city.</p>
@@ -229,7 +218,7 @@
 
   <h3>1. Initial prompt</h3>
   <p>Submitted to Claude Code in one message. The full text is below, unchanged.</p>
-<pre>You are a senior product designer and full-stack engineer. Build "Smart Housing Scout", a rental search web app for students who rent sight-unseen. It should have the structure of Zillow (map and list side by side, filters, saved homes) and the craft of Airbnb (clean, calm, image-led, every detail finished). Its difference: every claim in a listing is checked and shown as evidence.
+<div class="prompt">You are a senior product designer and full-stack engineer. Build "Smart Housing Scout", a rental search web app for students who rent sight-unseen. It should have the structure of Zillow (map and list side by side, filters, saved homes) and the craft of Airbnb (clean, calm, image-led, every detail finished). Its difference: every claim in a listing is checked and shown as evidence.
 
 PRODUCT
 - Name: Smart Housing Scout. Tagline: "Rent with evidence, not claims."
@@ -283,7 +272,7 @@ OUT OF SCOPE
 User accounts, payments, real listing scraping, and the Zillow API.
 
 HOW TO WORK
-Build in this order: (1) design tokens and layout shell, (2) sample data and types, (3) search page with map and cards, (4) Commute Truth-Teller with backend and mock mode, (5) listing detail with the Lease Time Machine and Bathroom Detective, (6) compare page and saved homes, (7) polish and accessibility. Do not ask me questions. Make reasonable assumptions and list them at the end. Do not claim anything works until you have run it, and tell me exactly how to run it and where to add the Google API key.</pre>
+Build in this order: (1) design tokens and layout shell, (2) sample data and types, (3) search page with map and cards, (4) Commute Truth-Teller with backend and mock mode, (5) listing detail with the Lease Time Machine and Bathroom Detective, (6) compare page and saved homes, (7) polish and accessibility. Do not ask me questions. Make reasonable assumptions and list them at the end. Do not claim anything works until you have run it, and tell me exactly how to run it and where to add the Google API key.</div>
 
   <div class="facts">
     <div class="facts-title">Review notes sent with the prompt (summary)</div>
@@ -299,24 +288,24 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
 
   <h3>2. The finished interface</h3>
   <p class="small">All screenshots: captured by Claude with headless Chrome from the running app, Nov 9, 2026, sample commute data.</p>
-  <figure><img src="img/01-search-desktop.jpg" alt=""><figcaption><b>Figure 1.</b> Search page. Cards sorted by fastest commute, map with price pins, and the finding "The closest home is not the fastest".</figcaption></figure>
-  <figure><img src="img/02-search-hover-pin.jpg" alt=""><figcaption><b>Figure 2.</b> Hovering the Semple St card highlights its pin on the map ($1.29k, dark). Each card shows the mini Journey Bar and a finding such as "Closer than Penn Ave, but 21 min slower".</figcaption></figure>
-  <figure><img src="img/03-filter-popover.jpg" alt=""><figcaption><b>Figure 3.</b> Filter pills. The Max commute filter counts walking, waiting, riding, and arriving early.</figcaption></figure>
-  <figure><img src="img/04-detail-top.jpg" alt=""><figcaption><b>Figure 4.</b> Listing detail: gallery (one large, four small), the listing's own claims, Scout's flag, and the sticky cost panel.</figcaption></figure>
+  <figure class="full"><img src="img/01-search-desktop.jpg" alt=""><figcaption><b>Figure 1.</b> Search page. Cards sorted by fastest commute, map with price pins, and the finding "The closest home is not the fastest".</figcaption></figure>
+  <figure class="full"><img src="img/02-search-hover-pin.jpg" alt=""><figcaption><b>Figure 2.</b> Hovering the Semple St card highlights its pin on the map ($1.29k, dark). Each card shows the mini Journey Bar and a finding such as "Closer than Penn Ave, but 21 min slower".</figcaption></figure>
+  <figure class="full"><img src="img/03-filter-popover.jpg" alt=""><figcaption><b>Figure 3.</b> Filter pills. The Max commute filter counts walking, waiting, riding, and arriving early.</figcaption></figure>
+  <figure class="full"><img src="img/04-detail-top.jpg" alt=""><figcaption><b>Figure 4.</b> Listing detail: gallery (one large, four small), the listing's own claims, Scout's flag, and the sticky cost panel.</figcaption></figure>
   <div class="fig-row">
     <figure class="w60"><img src="img/05-commute-truth-teller.jpg" alt=""><figcaption><b>Figure 5.</b> Commute Truth-Teller for the closest home. The listing says "5 minute walk to campus"; the real trip is 39 min with a transfer and 14 min of early arrival.</figcaption></figure>
     <figure class="w60"><img src="img/09-commute-long-transfer.jpg" alt=""><figcaption><b>Figure 6.</b> The best-reviewed home (Beechwood Blvd) has the longest commute: 43 min, infrequent 67 bus plus a transfer.</figcaption></figure>
   </div>
-  <figure><img src="img/06-ltm-real-photos.jpg" alt="" style="max-height:7.2in;margin:0 auto"><figcaption><b>Figure 7.</b> Lease Time Machine, Real photos tab: before/after slider and dated tenant photos, with an honest note that these are illustrative stock pairs.</figcaption></figure>
-  <figure><img src="img/07-ltm-true-cost-winter.jpg" alt=""><figcaption><b>Figure 8.</b> True monthly cost for the cheapest listing, winter: "Listed $950. True monthly cost $1,560." Gas alone is $333 in a drafty house.</figcaption></figure>
-  <figure><img src="img/08-ltm-past-tenants.jpg" alt=""><figcaption><b>Figure 9.</b> Past tenants tab: category ratings and reviews with a Verified tenant badge and tenancy dates.</figcaption></figure>
+  <div class="fig-row"><figure><img src="img/06-ltm-real-photos.jpg" alt=""><figcaption><b>Figure 7.</b> Lease Time Machine, Real photos tab: before/after slider and dated tenant photos, with an honest note that these are illustrative stock pairs.</figcaption></figure>
+  <figure><img src="img/08-ltm-past-tenants.jpg" alt=""><figcaption><b>Figure 9.</b> Past tenants tab: category ratings and reviews with a Verified tenant badge and tenancy dates.</figcaption></figure></div>
+  <figure class="full" style="--mh:5.4in"><img src="img/07-ltm-true-cost-winter.jpg" alt=""><figcaption><b>Figure 8.</b> True monthly cost for the cheapest listing, winter: "Listed $950. True monthly cost $1,560." Gas alone is $333 in a drafty house.</figcaption></figure>
   <div class="fig-row">
     <figure><img src="img/10-bathroom-detective.jpg" alt=""><figcaption><b>Figure 10.</b> Bathroom Detective: listed 2 baths, verified 1 full + 1 half, red mismatch flag.</figcaption></figure>
     <figure><img src="img/11-lease-terms.jpg" alt=""><figcaption><b>Figure 11.</b> Lease terms with a flexibility score.</figcaption></figure>
   </div>
-  <figure><img src="img/12-tenant-basics.jpg" alt=""><figcaption><b>Figure 12.</b> Tenant basics, labeled "general information, not legal advice". No statute numbers.</figcaption></figure>
-  <figure><img src="img/13-compare.jpg" alt=""><figcaption><b>Figure 13.</b> Compare 4 homes. The best value in each row is green: lowest commute and cost, most verified baths with no mismatch, highest flexibility and rating, fewest flags.</figcaption></figure>
-  <figure><img src="img/14-saved.jpg" alt=""><figcaption><b>Figure 14.</b> Saved homes, stored in the browser.</figcaption></figure>
+  <figure class="full"><img src="img/12-tenant-basics.jpg" alt=""><figcaption><b>Figure 12.</b> Tenant basics, labeled "general information, not legal advice". No statute numbers.</figcaption></figure>
+  <figure class="full"><img src="img/13-compare.jpg" alt=""><figcaption><b>Figure 13.</b> Compare 4 homes. The best value in each row is green: lowest commute and cost, most verified baths with no mismatch, highest flexibility and rating, fewest flags.</figcaption></figure>
+  <figure class="full"><img src="img/14-saved.jpg" alt=""><figcaption><b>Figure 14.</b> Saved homes, stored in the browser.</figcaption></figure>
   <div class="fig-row">
     <figure><img src="img/15-empty-state.jpg" alt=""><figcaption><b>Figure 15.</b> Empty state with a clear next step.</figcaption></figure>
     <figure><img src="img/16-error-state.jpg" alt=""><figcaption><b>Figure 16.</b> Error state when the commute server is off: what happened, how to fix it, and a Try again button.</figcaption></figure>
@@ -328,44 +317,17 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
 
   <h3>3. Testing verification</h3>
   <p>Automated tests, run with <code>npm test</code> on Nov 9, 2026. All 35 pass. The fixture is a Google Routes API response with one transfer.</p>
-<pre>✓ time: Monday afternoon -> Tuesday 8:45 EST (13:45 UTC)
-✓ time: Monday early morning -> same day
-✓ time: Friday evening -> Monday
-✓ time: late Thursday night in Pittsburgh is still Thursday, even though it is Friday in UTC
-✓ time: uses EDT in summer (12:45 UTC)
-✓ time: rejects bad input
-✓ time: formats clock times in Pittsburgh time
-✓ parser: reads Google duration strings
-✓ parser: derives departure from final arrival minus route duration
-✓ parser: splits the trip into journey parts       (walk 5, wait 5, ride 13, transfer walk 2, final walk 4, early 10)
-✓ parser: counts lines and transfers               (61B, 71A; 1 transfer)
-✓ parser: defines total as arrive-by minus departure, including early arrival   (39 min)
-✓ parser: keeps segments in trip order
-✓ parser: assumes no initial wait when route duration is missing
-✓ parser: never produces a negative initial wait if duration is too short
-✓ parser: handles a walk-only route
-✓ parser: rounds boundaries so odd seconds still add up
-✓ parser: returns null when there is no route
-✓ cost: matches a hand-calculated 12-month average  ($92 + $85 + $54 + $65 + $15 = $311)
-✓ cost: excludes utilities the landlord includes
-✓ cost: lets the user override what is included
-✓ cost: costs more in winter for gas heat, and more for drafty buildings
-✓ cost: total always equals rent plus non-included items
-✓ cost: sample trap: cheapest rent is not the cheapest home
-✓ insights: says when a closer home is slower than a farther one
-✓ insights: says when a farther home is faster
-✓ insights: ignores differences under 3 minutes
-✓ insights: returns nothing when distance and time agree
-✓ insights: names the closest and the fastest home
-✓ insights: flags 2 listed vs 1 full + 1 half
-✓ insights: accepts 1.5 listed as 1 full + 1 half
-✓ insights: scores each flexibility feature
-✓ traps: closest home is not the fastest; a farther direct bus wins
-✓ traps: best-reviewed home has the longest commute
-✓ traps: is deterministic
-
-Test Files  4 passed (4)
-     Tests  35 passed (35)</pre>
+<table>
+    <thead><tr><th>Area</th><th>What the tests check</th><th>Tests</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Route parser</td><td>A Google Routes response with one transfer (fixture) becomes walk 5, wait 5, ride 13, transfer walk 2, final walk 4, early arrival 10 = 39 min. Lines 61B and 71A, 1 transfer. Edge cases: missing duration, walk-only route, no route, odd seconds still add up</td><td>11</td><td class="check">All pass</td></tr>
+      <tr><td>True cost</td><td>Hand calculation for a 1,000 sq ft, 2-bedroom, gas-heated home: $92 + $85 + $54 + $65 + $15 = $311 extra. Included utilities, toggles, winter vs summer, drafty buildings</td><td>6</td><td class="check">All pass</td></tr>
+      <tr><td>Findings</td><td>"Closer than Penn Ave, but 21 min slower" and "Farther than Semple St, but 21 min faster"; differences under 3 min ignored; 2 listed vs 1 full + 1 half flagged; 1.5 listed vs 1 full + 1 half accepted; lease flexibility score</td><td>8</td><td class="check">All pass</td></tr>
+      <tr><td>Sample traps</td><td>Closest home is not the fastest; a farther direct bus wins; the best-reviewed home has the longest commute; results repeat exactly</td><td>3</td><td class="check">All pass</td></tr>
+      <tr><td>Time zone</td><td>"8:45" becomes the next weekday at 8:45 in Pittsburgh: Monday afternoon to Tuesday, Friday to Monday, late Thursday night stays Thursday, summer daylight time, bad input rejected</td><td>7</td><td class="check">All pass</td></tr>
+      <tr><td colspan="2"><b>Total</b> (<code>npm test</code>, Nov 9, 2026)</td><td><b>35</b></td><td class="check">35 of 35 pass</td></tr>
+    </tbody>
+  </table>
   <p>Manual checks in a browser: toggling "Internet included" lowered the Ellsworth Ave total from $2,192 to $2,127 (−$65); hovering a card highlighted its pin; the API rejected <code>"8.45"</code> as an arrive-by time with a clear message; a request from another website got no CORS permission.</p>
   <div class="yours" style="--h:40pt"><b>YOUR TURN.</b> If your instructor wants your own evidence, run <code>npm run dev</code>, repeat the five trap checks, and replace or add your own screenshots here.<div class="lines"></div></div>
 </section>
@@ -440,7 +402,6 @@ Test Files  4 passed (4)
   <ul>
     <li>☐ Fill in every YOUR TURN box in your own words.</li>
     <li>☐ Add the photo of your hand-drawn sketch (Question 2A).</li>
-    <li>☐ Fill in name, course, and date on the cover.</li>
     <li>☐ Check that the statement of who did what is accurate.</li>
     <li>☐ Upload to Canvas. Optional: attach the project folder or a link to the code.</li>
   </ul>
