@@ -80,14 +80,13 @@
 
 <!-- ============ Q1 ============ -->
 <section class="section first">
-  <div class="eyebrow">Question 1</div>
-  <h2>Functional decomposition <span class="points">(3 points)</span></h2>
+  <h2>1. Functional decomposition</h2>
   <p>The digital experience: an international student choosing an apartment in Pittsburgh, near Carnegie Mellon, before arriving in the city.</p>
 
-  <h3>User objective <span class="points">(1 point)</span></h3>
+  <h3>User objective</h3>
   <p>The users are college students from overseas who need to find accommodation before they arrive. They want to see what a place really looks like, and to know three things a listing may not tell them honestly: how long it really takes to get from the door to campus, not just how far it is (the Commute Truth-Teller); whether &ldquo;2 baths&rdquo; means two full bathrooms or one bathroom and a toilet-only washroom; and what the home will really cost each month with utilities. This matters because they need actual numbers to plan: a student with a $700 monthly budget and a $500 rent needs to know that utilities will stay under $200.</p>
 
-  <h3>Primary functions and system classification <span class="points">(2 points)</span></h3>
+  <h3>Primary functions and system classification</h3>
   <table>
     <thead><tr><th>#</th><th>Function</th><th>Done by</th><th>Front or back end</th><th>Where it meets the real world</th></tr></thead>
     <tbody>
@@ -108,8 +107,7 @@
 
 <!-- ============ Q2A ============ -->
 <section class="section">
-  <div class="eyebrow">Question 2A</div>
-  <h2>Project description and architecture <span class="points">(6 points)</span></h2>
+  <h2>2A. Project description and architecture</h2>
   <h3>Project description</h3>
   <p>Smart Housing Scout is a commute truth teller and lease time machine. It lets you know exactly what your house is like from overseas and if it truly fits your budget. It shows your true daily commute to campus, based on bus schedules, along with real stats and verified reviews from past renters.</p>
 
@@ -171,7 +169,7 @@
   <p class="small">Shared code (<code>shared/</code>) is used by both sides: types, sample listings, the route parser, the cost model, and the comparison rules.</p>
 
   <h3>Success metrics</h3>
-  <p>Success looks like students actually using the app to finalize houses without depending on Zillow, Google Maps, or video calling, completely removing friction at all layers. Technically, success means all five test traps trigger correctly in the frontend development, commute segments perfectly add up to the total time, and the cost table perfectly matches manual calculations.</p>
+  <p>Success looks like students actually using the app to finalize houses without depending on Zillow, Google Maps, or video calling. Technically, success means all five test traps trigger correctly in the frontend development, commute segments perfectly add up to the total time, and the cost table perfectly matches manual calculations.</p>
 
   <h3>Testing plan</h3>
   <p>The testing plan relies on five built in traps to catch edge cases: a home that is physically close but has a slow commute, a farther home with a fast direct bus, a listing claiming 2 baths that is verified as 1.5, a cheap rent with hidden high utilities, and a home with great reviews but the longest commute.</p>
@@ -194,8 +192,7 @@
 
 <!-- ============ Q2B ============ -->
 <section class="section">
-  <div class="eyebrow">Question 2B</div>
-  <h2>Working demonstration code <span class="points">(6 points)</span></h2>
+  <h2>2B. Working demonstration code</h2>
 
   <h3>1. Initial prompt</h3>
   <p>Submitted to Claude Code in one message. The full text is below, unchanged.</p>
@@ -277,7 +274,7 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
     <figure class="w60"><img src="img/05-commute-truth-teller.jpg" alt=""><figcaption><b>Figure 5.</b> Commute Truth-Teller for the closest home. The listing says "5 minute walk to campus"; the real trip is 39 min with a transfer and 14 min of early arrival.</figcaption></figure>
     <figure class="w60"><img src="img/09-commute-long-transfer.jpg" alt=""><figcaption><b>Figure 6.</b> The best-reviewed home (Beechwood Blvd) has the longest commute: 43 min, infrequent 67 bus plus a transfer.</figcaption></figure>
   </div>
-  <div class="fig-row"><figure><img src="img/06-ltm-real-photos.jpg" alt=""><figcaption><b>Figure 7.</b> Lease Time Machine, Real photos tab: before/after slider and dated tenant photos, with an honest note that these are illustrative stock pairs.</figcaption></figure>
+  <div class="fig-row"><figure><img src="img/06-ltm-real-photos.jpg" alt=""><figcaption><b>Figure 7.</b> Lease Time Machine, Real photos tab: before/after slider and dated tenant photos, with a note that these are illustrative stock pairs.</figcaption></figure>
   <figure><img src="img/08-ltm-past-tenants.jpg" alt=""><figcaption><b>Figure 9.</b> Past tenants tab: category ratings and reviews with a Verified tenant badge and tenancy dates.</figcaption></figure></div>
   <figure class="full" style="--mh:5.4in"><img src="img/07-ltm-true-cost-winter.jpg" alt=""><figcaption><b>Figure 8.</b> True monthly cost for the cheapest listing, winter: "Listed $950. True monthly cost $1,560." Gas alone is $333 in a drafty house.</figcaption></figure>
   <div class="fig-row">
@@ -314,8 +311,7 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
 
 <!-- ============ Q2C ============ -->
 <section class="section">
-  <div class="eyebrow">Question 2C</div>
-  <h2>Code modification <span class="points">(2 points)</span></h2>
+  <h2>2C. Code modification</h2>
   <h3>The change</h3>
   <p>After using the app myself, I asked for four changes. The main one was the budget filter. Before, I could only pick a preset amount such as &ldquo;Under $1,500&rdquo;. Now I can type my own limit for rent and for utilities, and turn on &ldquo;Match on total&rdquo; (Figure 3).</p>
   <p>The other three: the map can be resized by dragging the bar next to it, or hidden; every filter has its own Clear button, utilities has Select all, and there is a Clear all; and the Compare page can sort homes by shortest commute, lowest utilities, or lowest total cost.</p>
@@ -330,8 +326,7 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
 
 <!-- ============ Q2D ============ -->
 <section class="section">
-  <div class="eyebrow">Question 2D</div>
-  <h2>Summary reflection <span class="points">(3 points)</span></h2>
+  <h2>2D. Summary reflection</h2>
   <p><b>Systems approach.</b> Before any code was written, I wrote one detailed prompt: who the users are, the three features, five test traps with the result I expected from each, the order to build in, an offline sample mode, and a rule that nothing counts as working until it has been run. Before building, I had the prompt reviewed, and the review found the biggest gap: &ldquo;arrive by 8:45&rdquo; hides the time lost by arriving early. That became a fifth part of the trip, and the total commute is now the arrive-by time minus the time you leave home. The five traps worked as my test plan, because each one has a result you can check.</p>
   <p><b>Plan compared with the finished project.</b> The main logic went as planned, but several things did not. My laptop did not have Node.js installed. The traps did not appear on their own; the sample bus schedules had to be adjusted until the closest home really was slow and the far one really was fastest. Google&rsquo;s Routes API does not give a trip start time, so it had to be worked out from the trip length. And once I used the app myself, I asked for four changes that were not in my plan: typing my own budget, resizing the map, clearing filters, and sorting on the Compare page. The real Google transit data is still untested, because I do not have an API key yet.</p>
   <p><b>Working with the AI.</b> The AI was most helpful at turning a detailed prompt into a full working app quickly, with automated tests. It still needed checking. All 35 tests passed while the app showed a house with palm trees as a Pittsburgh listing, a confusing comparison between homes, and a phone layout where the search box was cut off; screenshots caught those. My own browsing found the changes that mattered most to a student, like typing my own budget. I stayed the director: I chose the features, the test traps, and the changes after testing.</p>
@@ -340,17 +335,10 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
 
 <!-- ============ Q3 ============ -->
 <section class="section">
-  <div class="eyebrow">Question 3</div>
-  <h2>Group review <span class="points">(5 points)</span></h2>
-  <p>In our group discussion, each of us presented our project and the others tried it. Gautam built a poker game with different game modes, such as a biggest-hand game. His interface was excellent: very clear, with strong colors and contrast, and very interactive. It felt like a full website, not something made just for an assignment, so hats off to him.</p>
+  <h2>3. Group review</h2>
+  <p>In our group discussion, each of us presented our project and the others tried it. Gautam built a poker game with different game modes, such as a biggest-hand game. His interface was great: very clear, with strong colors and contrast, and very interactive. It felt like a full website, not something made just for an assignment, so hats off to him.</p>
   <p>Arzu made a bus time checker that tells you when to take the bus. Her interface was very cute, and it removed the boring friction from a daily routine. Tanya made an internship tracker that was simple yet interactive. Max built the backend for the common space project, and I loved how detailed it was, with the punk wall, the desk LED, and the ring countdown.</p>
   <p>Tvisha&rsquo;s project was the one I found most helpful for me personally. Her tracker keeps track of what is left in the fridge and helps plan what to make each day. As a student at Carnegie Mellon, deciding what to cook every day without knowing what is left in the fridge is a real struggle, and her tracker handles all of it in a simple, organized way. Right now nothing like it exists unless you ask Claude to manage it for you.</p>
-
-  <h3>Before you submit</h3>
-  <ul>
-    <li>☐ Check that the statement of who did what is accurate.</li>
-    <li>☐ Upload to Canvas. Optional: attach the project folder or a link to the code.</li>
-  </ul>
 </section>
 
 </body>
