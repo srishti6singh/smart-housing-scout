@@ -110,16 +110,14 @@
 <section class="section">
   <div class="eyebrow">Question 2A</div>
   <h2>Project description and architecture <span class="points">(6 points)</span></h2>
-  <div class="yours" style="--h:0"><b>YOUR TURN.</b> The assignment says this part may not be outsourced. Use the facts below and write each item in your own words. Keep the tables if you want; rewrite the sentences.</div>
+  <h3>Project description</h3>
+  <p>Smart Housing Scout is a commute truth teller and lease time machine. It lets you know exactly what your house is like from overseas and if it truly fits your budget. It features real time tracking for your daily commute to campus, along with real stats and verified reviews from past renters.</p>
 
-  <div class="facts">
-    <div class="facts-title">Definition and target user</div>
-    <p><b>Project:</b> Smart Housing Scout, a rental search with a map and list side by side. Its difference is that every listing claim is checked and shown as evidence.</p>
-    <p><b>Target user:</b> students and international students moving to Pittsburgh who have never visited. Default campus: Carnegie Mellon; Pitt and Duquesne also supported.</p>
-  </div>
-  <div class="yours" style="--h:60pt"><b>YOUR TURN.</b> Definition and target user, in your words.<div class="lines"></div></div>
+  <h3>Target user</h3>
+  <p>The users are international college students moving to Pittsburgh who need to secure accommodation before they arrive.</p>
 
   <h3>Requirements</h3>
+  <p>The app must rank homes by real door to campus commute time rather than distance. It needs to break the trip down into a visual Journey Bar, calculate the true monthly cost including utilities, flag mismatches in bathroom counts, let users compare options side by side, and gracefully work offline using sample data if the backend server is down.</p>
   <table>
     <thead><tr><th style="width:24pt">#</th><th>Requirement</th><th>Met?</th></tr></thead>
     <tbody>
@@ -136,6 +134,7 @@
   </table>
 
   <h3>Inputs and outputs</h3>
+  <p>Inputs include the target campus, a specific arrive by time, search text, and filters for budget, beds, and baths. Outputs provide the step by step commute breakdown, estimated true monthly utility cost, verified tenant ratings, and plain language mismatch flags.</p>
   <table>
     <thead><tr><th>Inputs</th><th>Outputs</th></tr></thead>
     <tbody><tr>
@@ -158,16 +157,8 @@
     </tbody>
   </table>
 
-  <h3>Logic</h3>
-  <ul>
-    <li><b>Departure:</b> the Routes API gives no trip start time, so departure = final arrival − route duration.</li>
-    <li><b>Wait</b> = bus departure − (departure + walk to stop). Transfer waits are added to the same bucket.</li>
-    <li><b>Early arrival</b> = arrive-by time − actual arrival at the building.</li>
-    <li><b>Total commute</b> = arrive-by time − departure. Early arrival counts, because the student spends it commuting.</li>
-    <li><b>True cost</b> = rent + every utility not included in rent. Annual average = mean of 4 winter, 4 summer, and 4 other months.</li>
-    <li><b>Bath check:</b> verified = full + 0.5 × half. Mismatch if it differs from the listed count.</li>
-    <li><b>Lease flexibility:</b> +1 lease under 12 months, +1 early termination allowed, +1 sublease (+0.5 with approval), +1 notice of 30 days or less.</li>
-  </ul>
+  <h3>How it works (logic and math)</h3>
+  <p>If you select CMU, the app finds the actual bus going to CMU from a specific stop rather than a random one, aligning with transit APIs for accurate schedules. For the commute math, the total time equals your arrive by time minus your departure time, meaning early arrival is accurately counted as commute time. True cost is calculated by adding rent and estimated utilities based on square footage, season, and heating type. The Bathroom Detective compares the listed count against verified data where a half bath equals 0.5. It raises a red flag if the numbers do not match.</p>
 
   <h3>Architecture</h3>
   <div class="diagram">
@@ -179,15 +170,11 @@
   </div>
   <p class="small">Shared code (<code>shared/</code>) is used by both sides: types, sample listings, the route parser, the cost model, and the comparison rules.</p>
 
-  <h3>What success looks like</h3>
-  <ul>
-    <li>The five built-in traps appear correctly (table below), on screen and in automated tests.</li>
-    <li>Segment minutes always add up to the total commute.</li>
-    <li>The cost table matches a hand calculation ($311 extra for a 1,000 sq ft, 2-bedroom, gas-heated home).</li>
-    <li>When the server is off, the page says what happened and how to fix it, instead of breaking.</li>
-  </ul>
+  <h3>Success metrics</h3>
+  <p>Success looks like students actually using the app to finalize houses without depending on Zillow, Google Maps, or video calling, completely removing friction at all layers. Technically, success means all five test traps trigger correctly in the frontend development, commute segments perfectly add up to the total time, and the cost table perfectly matches manual calculations.</p>
 
-  <h3>Plan for testing: the five traps</h3>
+  <h3>Testing plan</h3>
+  <p>The testing plan relies on five built in traps to catch edge cases: a home that is physically close but has a slow commute, a farther home with a fast direct bus, a listing claiming 2 baths that is verified as 1.5, a cheap rent with hidden high utilities, and a home with great reviews but the longest commute.</p>
   <table>
     <thead><tr><th>Trap</th><th>Home</th><th>Expected result (CMU, arrive 8:45 AM)</th><th>Result</th></tr></thead>
     <tbody>
@@ -199,8 +186,10 @@
     </tbody>
   </table>
 
-  <div style="page-break-inside:avoid"><h3>Interface sketch</h3>
-  <div class="yours" style="--h:200pt"><b>YOUR TURN.</b> Draw the layout by hand and paste a photo here: top bar (logo, search, arrive-by), filter pills, list of photo cards on the left, map with price pins on the right.<div class="lines" style="background:none"></div></div></div>
+  <figure style="page-break-inside:avoid"><h3>Interface sketch</h3>
+    <img src="img/sketch.jpg" alt="Hand-drawn whiteboard sketch of the search page: logo and search bar, To CMU, Budget, Bed and Baths pills, and four home cards with prices and save hearts" style="max-height:3.9in;margin:0 auto">
+    <figcaption>Hand-drawn sketch of the search page, made before building.</figcaption>
+  </figure>
 </section>
 
 <!-- ============ Q2B ============ -->
@@ -393,7 +382,6 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
   <h3>Before you submit</h3>
   <ul>
     <li>☐ Fill in every YOUR TURN box in your own words.</li>
-    <li>☐ Add the photo of your hand-drawn sketch (Question 2A).</li>
     <li>☐ Check that the statement of who did what is accurate.</li>
     <li>☐ Upload to Canvas. Optional: attach the project folder or a link to the code.</li>
   </ul>
