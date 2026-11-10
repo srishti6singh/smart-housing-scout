@@ -20,8 +20,9 @@ export const SORT_LABELS: Record<SortKey, string> = {
 };
 
 export interface Filters {
-  maxBudget: number | null;
-  budgetUsesTrueCost: boolean;
+  maxRent: number | null;
+  maxUtilities: number | null;
+  matchTotal: boolean;
   minBeds: number;
   minFullBaths: number;
   maxCommute: number | null;
@@ -29,8 +30,9 @@ export interface Filters {
 }
 
 export const DEFAULT_FILTERS: Filters = {
-  maxBudget: null,
-  budgetUsesTrueCost: true,
+  maxRent: null,
+  maxUtilities: null,
+  matchTotal: true,
   minBeds: 0,
   minFullBaths: 0,
   maxCommute: null,

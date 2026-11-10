@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getCampus } from '../../shared/campuses';
 import { formatDistance } from '../../shared/geo';
 import { closestVsFastest, type CommuteRank } from '../../shared/insights';
@@ -9,7 +9,8 @@ import { ListingCard } from '../components/ListingCard';
 import { MapView } from '../components/MapView';
 import { EmptyState, ErrorBanner, SampleLabel } from '../components/states';
 import { CompareTray } from '../components/CompareTray';
-import { prefersReducedMotion } from '../lib/format';
+import { budgetMatch } from '../lib/filters';
+import { prefersReducedMotion, safeStorage } from '../lib/format';
 import { commuteMinutes, DEFAULT_FILTERS, SORT_LABELS, useApp, type ListingView } from '../state/AppState';
 
 function matchesQuery(v: ListingView, q: string) {
@@ -21,8 +22,68 @@ function matchesQuery(v: ListingView, q: string) {
     .every((w) => hay.includes(w));
 }
 
+const MAP_MIN = 20;
+const MAP_MAX = 70;
+const MAP_DEFAULT = 44;
+const clampMap = (pct: number) => Math.min(MAP_MAX, Math.max(MAP_MIN, Math.round(pct)));
+
+/** Drag handle between the list and the map. Arrow keys resize it too. */
+function MapDivider({ pct, onChange }: { pct: number; onChange: (pct: number) => void }) {
+  const toPct = (e: React.PointerEvent<HTMLDivElement>) => {
+    const box = e.currentTarget.parentElement!.getBoundingClientRect();
+    return clampMap(((box.right - e.clientX) / box.width) * 100);
+  };
+  return (
+    <div
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Resize map"
+      aria-valuemin={MAP_MIN}
+      aria-valuemax={MAP_MAX}
+      aria-valuenow={pct}
+      aria-valuetext={`Map is ${pct}% of the width`}
+      tabIndex={0}
+      title="Drag to resize the map. Double-click to reset."
+      onPointerDown={(e) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        document.body.style.userSelect = 'none';
+      }}
+      onPointerMove={(e) => {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) onChange(toPct(e));
+      }}
+      onPointerUp={(e) => {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+        document.body.style.userSelect = '';
+      }}
+      onDoubleClick={() => {
+        onChange(MAP_DEFAULT);
+      }}
+      onKeyDown={(e) => {
+        const step = { ArrowLeft: 5, ArrowRight: -5 }[e.key];
+        if (step) onChange(clampMap(pct + step));
+        else if (e.key === 'Home') onChange(MAP_MAX);
+        else if (e.key === 'End') onChange(MAP_MIN);
+        else return;
+        e.preventDefault();
+      }}
+      className="group sticky top-[137px] z-10 flex h-[calc(100vh-137px)] w-3 shrink-0 cursor-col-resize touch-none items-center justify-center border-l border-hairline bg-white hover:bg-mist"
+    >
+      <span className="h-10 w-1 rounded-full bg-hairline transition-colors group-hover:bg-ink-faint group-focus-visible:bg-transit" aria-hidden />
+    </div>
+  );
+}
+
 export function SearchPage() {
   const app = useApp();
+  const [mapPct, setMapPct] = useState(() => clampMap(safeStorage.get('scout.mapPct', MAP_DEFAULT)));
+  const [showMap, setShowMap] = useState(() => safeStorage.get('scout.showMap', true));
+  useEffect(() => safeStorage.set('scout.mapPct', mapPct), [mapPct]);
+  const toggleMap = () => {
+    setShowMap((s) => {
+      safeStorage.set('scout.showMap', !s);
+      return !s;
+    });
+  };
   const { views, filters, sort, query, campusId, commuteError, commuteSource, arriveByIso, saved } = app;
   const campus = getCampus(campusId);
   const [hoverId, setHoverId] = useState<string | null>(null);
@@ -33,7 +94,7 @@ export function SearchPage() {
     const filtered = views.filter((v) => {
       const { listing, cost } = v;
       if (!matchesQuery(v, query)) return false;
-      if (filters.maxBudget !== null && (filters.budgetUsesTrueCost ? cost.total : listing.rent) > filters.maxBudget) return false;
+      if (!budgetMatch(listing.rent, cost.extra, filters)) return false;
       if (listing.beds < filters.minBeds) return false;
       if (listing.bathroom.verifiedFull < filters.minFullBaths) return false;
       if (filters.maxCommute !== null) {
@@ -90,9 +151,12 @@ export function SearchPage() {
             {arriveByIso ? `, arriving by ${formatClock(arriveByIso)}` : ''}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="badge border border-hairline bg-white text-ink-muted">Sample listings</span>
           {commuteSource === 'sample' && <SampleLabel />}
+          <button type="button" onClick={toggleMap} aria-pressed={!showMap} className="pill hidden px-3 py-1.5 text-xs lg:inline-flex">
+            <IconMap size={14} /> {showMap ? 'Hide map' : 'Show map'}
+          </button>
         </div>
       </div>
 
@@ -133,7 +197,7 @@ export function SearchPage() {
           }
         />
       ) : (
-        <div className="grid gap-x-4 gap-y-6 sm:grid-cols-2">
+        <div className="grid gap-x-4 gap-y-6 [grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr))]">
           {results.map((v) => (
             <ListingCard key={v.listing.id} view={v} active={selectedId === v.listing.id} onHover={setHoverId} />
           ))}
@@ -158,9 +222,16 @@ export function SearchPage() {
       <FilterBar resultCount={results.length} />
 
       {/* Desktop: list and map side by side */}
-      <div className="hidden lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,44%)]">
-        <div className="min-w-0">{list}</div>
-        <div className="sticky top-[137px] h-[calc(100vh-137px)] border-l border-hairline">{map}</div>
+      <div className="hidden lg:flex">
+        <div className="min-w-0 flex-1">{list}</div>
+        {showMap && (
+          <>
+            <MapDivider pct={mapPct} onChange={setMapPct} />
+            <div className="sticky top-[137px] h-[calc(100vh-137px)] shrink-0" style={{ width: `${mapPct}%` }}>
+              {map}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Mobile and tablet: list or map, with a bottom sheet */}

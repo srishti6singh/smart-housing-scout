@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { bathMismatch, describeBaths, leaseFlexibility, verifiedBathCount } from '../../shared/insights';
 import { photoUrl } from '../../shared/listings';
@@ -6,7 +6,7 @@ import { IconX } from '../components/icons';
 import { Img } from '../components/Img';
 import { JourneyBar } from '../components/JourneyBar';
 import { EmptyState, SampleLabel } from '../components/states';
-import { money } from '../lib/format';
+import { money, safeStorage } from '../lib/format';
 import { commuteMinutes, useApp, type ListingView } from '../state/AppState';
 
 interface Row {
@@ -100,9 +100,24 @@ const ROWS: Row[] = [
   },
 ];
 
+type CompareSort = 'added' | 'commute' | 'utilities' | 'total' | 'rent' | 'rating' | 'flags';
+
+const COMPARE_SORTS: { id: CompareSort; label: string; key?: (v: ListingView) => number }[] = [
+  { id: 'added', label: 'Order added' },
+  { id: 'commute', label: 'Shortest commute', key: (v) => commuteMinutes(v) ?? Number.POSITIVE_INFINITY },
+  { id: 'utilities', label: 'Lowest utilities', key: (v) => v.cost.extra },
+  { id: 'total', label: 'Lowest true monthly cost', key: (v) => v.cost.total },
+  { id: 'rent', label: 'Lowest rent', key: (v) => v.listing.rent },
+  { id: 'rating', label: 'Best tenant rating', key: (v) => -v.rating },
+  { id: 'flags', label: 'Fewest flags', key: (v) => v.flags.length },
+];
+
 export function ComparePage() {
   const { compare, viewById, toggleCompare, commuteSource } = useApp();
-  const views = compare.map((id) => viewById[id]).filter(Boolean);
+  const [sortBy, setSortBy] = useState<CompareSort>(() => safeStorage.get<CompareSort>('scout.compareSort', 'added'));
+  const added = compare.map((id) => viewById[id]).filter(Boolean);
+  const sortKey = COMPARE_SORTS.find((s) => s.id === sortBy)?.key;
+  const views = sortKey ? [...added].sort((a, b) => sortKey(a) - sortKey(b)) : added;
 
   if (views.length < 2) {
     return (
@@ -125,7 +140,27 @@ export function ComparePage() {
           <h1 className="text-xl font-semibold">Compare {views.length} homes</h1>
           <p className="text-sm text-ink-muted">The best value in each row is highlighted in green.</p>
         </div>
-        {commuteSource === 'sample' && <SampleLabel />}
+        <div className="flex flex-wrap items-center gap-3">
+          {commuteSource === 'sample' && <SampleLabel />}
+          <label className="flex items-center gap-2 text-sm">
+            <span className="text-ink-muted">Sort homes by</span>
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                const next = e.target.value as CompareSort;
+                setSortBy(next);
+                safeStorage.set('scout.compareSort', next);
+              }}
+              className="rounded-input border border-hairline bg-white px-3 py-2 font-medium focus:border-transit focus:outline-none"
+            >
+              {COMPARE_SORTS.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
       </div>
       <div className="overflow-x-auto rounded-card border border-hairline bg-white">
         <table className="w-full min-w-[720px] table-fixed border-collapse text-left">

@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import type { Campus, Listing } from '../../shared/types';
 
@@ -30,14 +30,27 @@ function FitBounds({ points, padding }: { points: [number, number][]; padding: n
   return null;
 }
 
-function InvalidateOnResize() {
+/** When the map pane is resized, redraw tiles and refit so every pin stays in view. */
+function RefitOnResize({ points, padding }: { points: [number, number][]; padding: number }) {
   const map = useMap();
+  const pointsRef = useRef(points);
+  pointsRef.current = points;
   useEffect(() => {
     const el = map.getContainer();
-    const ro = new ResizeObserver(() => map.invalidateSize());
+    let frame = 0;
+    const ro = new ResizeObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        map.invalidateSize();
+        if (pointsRef.current.length > 0) map.fitBounds(L.latLngBounds(pointsRef.current), { padding: [padding, padding], maxZoom: 15 });
+      });
+    });
     ro.observe(el);
-    return () => ro.disconnect();
-  }, [map]);
+    return () => {
+      cancelAnimationFrame(frame);
+      ro.disconnect();
+    };
+  }, [map, padding]);
   return null;
 }
 
@@ -76,7 +89,7 @@ export function MapView({ listings, campus, activeId, savedIds = [], onSelect, o
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <FitBounds points={points} padding={padding} />
-      <InvalidateOnResize />
+      <RefitOnResize points={points} padding={padding} />
       <Marker position={[campus.building.lat, campus.building.lng]} icon={campusIcon(campus.short)} keyboard={false} zIndexOffset={-100}>
         <Tooltip direction="top" offset={[0, -14]}>
           {campus.building.name}

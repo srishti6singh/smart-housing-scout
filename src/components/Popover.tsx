@@ -25,11 +25,19 @@ export function Popover({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const id = useId();
 
+  // Reposition (never close) on resize: on phones, focusing a number box opens
+  // the keyboard, which resizes the window.
   useLayoutEffect(() => {
-    if (!open || !buttonRef.current) return;
-    const r = buttonRef.current.getBoundingClientRect();
-    const maxLeft = window.innerWidth - PANEL_WIDTH - GUTTER;
-    setPos({ top: r.bottom + 8, left: Math.max(GUTTER, Math.min(r.left, maxLeft)) });
+    if (!open) return;
+    const place = () => {
+      if (!buttonRef.current) return;
+      const r = buttonRef.current.getBoundingClientRect();
+      const maxLeft = window.innerWidth - PANEL_WIDTH - GUTTER;
+      setPos({ top: r.bottom + 8, left: Math.max(GUTTER, Math.min(r.left, maxLeft)) });
+    };
+    place();
+    window.addEventListener('resize', place);
+    return () => window.removeEventListener('resize', place);
   }, [open]);
 
   useEffect(() => {
@@ -47,11 +55,9 @@ export function Popover({
     };
     document.addEventListener('mousedown', onDown);
     document.addEventListener('keydown', onKey);
-    window.addEventListener('resize', close);
     return () => {
       document.removeEventListener('mousedown', onDown);
       document.removeEventListener('keydown', onKey);
-      window.removeEventListener('resize', close);
     };
   }, [open]);
 
