@@ -310,62 +310,32 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
     </tbody>
   </table>
   <p>Manual checks in a browser: toggling "Internet included" lowered the Ellsworth Ave total from $2,192 to $2,127 (−$65); hovering a card highlighted its pin; the API rejected <code>"8.45"</code> as an arrive-by time with a clear message; a request from another website got no CORS permission.</p>
-  <div class="yours" style="--h:40pt"><b>YOUR TURN.</b> If your instructor wants your own evidence, run <code>npm run dev</code>, repeat the five trap checks, and replace or add your own screenshots here.<div class="lines"></div></div>
 </section>
 
 <!-- ============ Q2C ============ -->
 <section class="section">
   <div class="eyebrow">Question 2C</div>
   <h2>Code modification <span class="points">(2 points)</span></h2>
-  <p>Changes made after the first working version, found while testing in a real browser. Pick one to describe.</p>
-  <table>
-    <thead><tr><th>Change</th><th>Why</th><th>How</th></tr></thead>
-    <tbody>
-      <tr><td><b>A. Photo labels fixed</b></td><td>The first screenshot showed a house with palm trees as a Pittsburgh listing, and some "bedroom" photos were kitchens. Code tests could not catch this.</td><td>Every stock photo was viewed on a contact sheet and re-sorted into living room, kitchen, bedroom, bath, and exterior lists in <code>shared/listings.ts</code>. Exteriors were spread so neighboring cards differ.</td></tr>
-      <tr><td><b>B. "Farther but faster" compares with the closest home</b></td><td>The Penn Ave card said "Farther than Westminster Pl, but 25 min faster", which compared it with a random slow home. The useful comparison is with the home a renter would pick by distance.</td><td>In <code>commuteInsight()</code>, slower homes are now sorted by distance, not by time. The card now reads "Farther than Semple St, but 21 min faster".</td></tr>
-      <tr><td><b>C. Clear message when the server is off</b></td><td>When the API restarted, the dev proxy answered with an empty 500 error, so the page would have said "Commute server returned 500", which does not tell the user what to do.</td><td>In <code>fetchCommute()</code>, any 500-level response without a JSON body now shows: "Can't reach the commute server. Start it with npm run dev" (Figure 16).</td></tr>
-      <tr><td><b>D. Phone layout</b></td><td>On a 375 px phone the "Arrive by" pill wrapped onto two lines and the search placeholder was cut to "Neighbc". The compare tray covered the map's bottom sheet.</td><td>Pills got <code>whitespace-nowrap</code>; the placeholder becomes "Search" on narrow screens; the tray hides in map mode.</td></tr>
-    </tbody>
-  </table>
-  <div class="facts">
-    <div class="facts-title">Who did what</div>
-    <p>Claude found these problems while testing in the browser, wrote the code changes, and re-ran the tests.</p>
-  </div>
-  <div class="yours" style="--h:150pt"><b>YOUR TURN.</b> Choose one change. Describe what changed, why, and how, in your own words. Say truthfully who typed the code. If you make your own change, describe that one instead.<div class="lines"></div></div>
+  <h3>The change</h3>
+  <p>After using the app myself, I asked for four changes. The main one was the budget filter. Before, I could only pick a preset amount such as &ldquo;Under $1,500&rdquo;. Now I can type my own limit for rent and for utilities, and turn on &ldquo;Match on total&rdquo; (Figure 3).</p>
+  <p>The other three: the map can be resized by dragging the bar next to it, or hidden; every filter has its own Clear button, utilities has Select all, and there is a Clear all; and the Compare page can sort homes by shortest commute, lowest utilities, or lowest total cost.</p>
+
+  <h3>Why</h3>
+  <p>While browsing, I could not enter my own numbers. If my budget is $1,000 for rent and at most $250 for utilities, a house with $750 rent and $400 utilities should still show up, because the total fits. That is the same budget question as my user objective. The map always took about 30% of the right side of the home page, which did not make sense when I only wanted to look at the homes. And when comparing, I wanted to line homes up by commute or cost, the way you sort a list.</p>
+
+  <h3>How</h3>
+  <p>Claude wrote the code, and I tested it. The budget filter now stores three things: a rent limit, a utilities limit, and whether to match on the total. A small function, <code>budgetMatch</code>, checks a home: when both limits are set and &ldquo;Match on total&rdquo; is on, rent plus utilities must be within the two limits added together; otherwise each limit is checked on its own. Eight new unit tests check this, including my $750 + $400 example. In the browser, rent $1,200 and utilities $250 showed 3 homes with &ldquo;Match on total&rdquo; on and 2 with it off.</p>
+  <p>Testing the change also found a bug: the filter panel closed whenever the window resized. On a phone, tapping a number box opens the keyboard, which resizes the window, so the panel would close before you could type. It now moves into place instead of closing.</p>
 </section>
 
 <!-- ============ Q2D ============ -->
 <section class="section">
   <div class="eyebrow">Question 2D</div>
   <h2>Summary reflection <span class="points">(3 points)</span></h2>
-  <div class="facts">
-    <div class="facts-title">True events to draw from</div>
-    <p><b>Systems approach</b></p>
-    <ul>
-      <li>The prompt defined the users, the five test traps, the data types, the build order, and an offline mode before any code was written. The traps worked as a test plan: each one has an expected result that can be checked.</li>
-      <li>A review of the prompt before building found the biggest gap: "arrive by 8:45" hides time lost to arriving early. That became the fifth segment and changed how total commute is defined.</li>
-    </ul>
-    <p><b>Plan compared with the finished project</b></p>
-    <ul>
-      <li>Node.js was not installed on the laptop, so Claude downloaded the official version for the session only.</li>
-      <li>The traps did not appear on their own. Claude had to adjust the sample bus schedules so the closest home really was slow and the far home really was fastest, and added tests so they stay that way.</li>
-      <li>The Google Routes API has no trip start time, which the prompt assumed. The parser works it out from the route duration instead.</li>
-    </ul>
-    <p><b>Working with the AI</b></p>
-    <ul>
-      <li>Most helpful: building a full app with a server, tests, and offline mode from one detailed prompt, and checking the API documentation before writing code.</li>
-      <li>Where it needed checking: screenshots caught problems that 35 passing tests missed: wrong photos, a confusing comparison, and phone layout bugs.</li>
-      <li>The rate limit worked: the screenshot script itself was blocked after 300 requests a minute, which proved the limit is real.</li>
-      <li>Not yet verified: the real Google transit path, because no API key was available.</li>
-    </ul>
-    <p><b>Next time</b></p>
-    <ul>
-      <li>Write expected numbers for each trap in the prompt, not only descriptions.</li>
-      <li>Sketch the phone layout too, not only desktop.</li>
-      <li>Get an API key early so real data can be tested.</li>
-    </ul>
-  </div>
-  <div class="yours" style="--h:330pt"><b>YOUR TURN.</b> Write several paragraphs in your own words: your systems approach, plan vs. result, how you worked with the AI, and what you would do differently.<div class="lines"></div></div>
+  <p><b>Systems approach.</b> Before any code was written, I wrote one detailed prompt: who the users are, the three features, five test traps with the result I expected from each, the order to build in, an offline sample mode, and a rule that nothing counts as working until it has been run. Before building, I had the prompt reviewed, and the review found the biggest gap: &ldquo;arrive by 8:45&rdquo; hides the time lost by arriving early. That became a fifth part of the trip, and the total commute is now the arrive-by time minus the time you leave home. The five traps worked as my test plan, because each one has a result you can check.</p>
+  <p><b>Plan compared with the finished project.</b> The main logic went as planned, but several things did not. My laptop did not have Node.js installed. The traps did not appear on their own; the sample bus schedules had to be adjusted until the closest home really was slow and the far one really was fastest. Google&rsquo;s Routes API does not give a trip start time, so it had to be worked out from the trip length. And once I used the app myself, I asked for four changes that were not in my plan: typing my own budget, resizing the map, clearing filters, and sorting on the Compare page. The real Google transit data is still untested, because I do not have an API key yet.</p>
+  <p><b>Working with the AI.</b> The AI was most helpful at turning a detailed prompt into a full working app quickly, with automated tests. It still needed checking. All 35 tests passed while the app showed a house with palm trees as a Pittsburgh listing, a confusing comparison between homes, and a phone layout where the search box was cut off; screenshots caught those. My own browsing found the changes that mattered most to a student, like typing my own budget. I stayed the director: I chose the features, the test traps, and the changes after testing.</p>
+  <p><b>Next time.</b> I would write the exact expected number for each trap in the prompt, sketch the phone layout as well as the desktop one, get a Google API key early so real data can be tested, and try the app as a user sooner, because my own testing found the most useful improvements.</p>
 </section>
 
 <!-- ============ Q3 ============ -->
@@ -378,7 +348,6 @@ Build in this order: (1) design tokens and layout shell, (2) sample data and typ
 
   <h3>Before you submit</h3>
   <ul>
-    <li>☐ Fill in every YOUR TURN box in your own words.</li>
     <li>☐ Check that the statement of who did what is accurate.</li>
     <li>☐ Upload to Canvas. Optional: attach the project folder or a link to the code.</li>
   </ul>
