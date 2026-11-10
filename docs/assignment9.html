@@ -54,6 +54,8 @@
   .cover-name { font-size: 26pt; font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
   .cover-tag { font-size: 13pt; color: var(--muted); margin-top: 4pt; }
   .cover .lede { margin: 6pt auto 0; max-width: 5.6in; font-size: 10.5pt; }
+  .cover-link { margin-top: 8pt; font-size: 10pt; }
+  .cover-link a { color: var(--green); font-weight: 600; text-decoration: none; }
   .prompt { columns: 2; column-gap: 16pt; font: 7.3pt/1.42 Inter, -apple-system, Arial, sans-serif; white-space: pre-wrap; background: var(--mist); border: 1px solid var(--line); border-radius: 8px; padding: 10pt 12pt; margin: 0 0 10pt; }
   figure.full img { max-height: var(--mh, 3.7in); margin: 0 auto; }
   .diagram { display: grid; grid-template-columns: 1fr 22pt 1fr 22pt 1fr; align-items: center; margin: 8pt 0 12pt; page-break-inside: avoid; }
@@ -76,6 +78,7 @@
   <div class="cover-tag">Rent with evidence, not claims.</div>
   <div class="eyebrow" style="margin-top:18pt">Assignment 9: Software Project</div>
   <p class="lede">A web app for students who rent in Pittsburgh without seeing the home first. It ranks homes by real door-to-campus commute time, true monthly cost, and verified bathroom count, instead of what the listing says.</p>
+  <p class="cover-link">Code: <a href="https://github.com/srishti6singh/smart-housing-scout">github.com/srishti6singh/smart-housing-scout</a></p>
 </header>
 
 <!-- ============ Q1 ============ -->
@@ -194,6 +197,7 @@
 <section class="section">
   <h2>2B. Working demonstration code</h2>
 
+  <p>The full code is on GitHub: <a href="https://github.com/srishti6singh/smart-housing-scout">github.com/srishti6singh/smart-housing-scout</a>. To run it: <code>npm install</code>, then <code>npm run dev</code>, then open localhost:5173 (details in the README).</p>
   <h3>1. Initial prompt</h3>
   <p>Submitted to Claude Code in one message. The full text is below, unchanged.</p>
 <div class="prompt">You are a senior product designer and full-stack engineer. Build "Smart Housing Scout", a rental search web app for students who rent sight-unseen. It should have the structure of Zillow (map and list side by side, filters, saved homes) and the craft of Airbnb (clean, calm, image-led, every detail finished). Its difference: every claim in a listing is checked and shown as evidence.
