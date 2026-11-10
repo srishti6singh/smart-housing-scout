@@ -111,13 +111,13 @@
   <div class="eyebrow">Question 2A</div>
   <h2>Project description and architecture <span class="points">(6 points)</span></h2>
   <h3>Project description</h3>
-  <p>Smart Housing Scout is a commute truth teller and lease time machine. It lets you know exactly what your house is like from overseas and if it truly fits your budget. It features real time tracking for your daily commute to campus, along with real stats and verified reviews from past renters.</p>
+  <p>Smart Housing Scout is a commute truth teller and lease time machine. It lets you know exactly what your house is like from overseas and if it truly fits your budget. It shows your true daily commute to campus, based on bus schedules, along with real stats and verified reviews from past renters.</p>
 
   <h3>Target user</h3>
   <p>The users are international college students moving to Pittsburgh who need to secure accommodation before they arrive.</p>
 
   <h3>Requirements</h3>
-  <p>The app must rank homes by real door to campus commute time rather than distance. It needs to break the trip down into a visual Journey Bar, calculate the true monthly cost including utilities, flag mismatches in bathroom counts, let users compare options side by side, and gracefully work offline using sample data if the backend server is down.</p>
+  <p>The app must rank homes by real door to campus commute time rather than distance. It needs to break the trip down into a visual Journey Bar, calculate the true monthly cost including utilities, flag mismatches in bathroom counts, let users compare options side by side, and work offline using sample data when no Google API key is set, and show a clear error message if the server is down.</p>
   <table>
     <thead><tr><th style="width:24pt">#</th><th>Requirement</th><th>Met?</th></tr></thead>
     <tbody>
@@ -158,7 +158,7 @@
   </table>
 
   <h3>How it works (logic and math)</h3>
-  <p>If you select CMU, the app finds the actual bus going to CMU from a specific stop rather than a random one, aligning with transit APIs for accurate schedules. For the commute math, the total time equals your arrive by time minus your departure time, meaning early arrival is accurately counted as commute time. True cost is calculated by adding rent and estimated utilities based on square footage, season, and heating type. The Bathroom Detective compares the listed count against verified data where a half bath equals 0.5. It raises a red flag if the numbers do not match.</p>
+  <p>If you select CMU, the app finds the actual bus going to CMU from a specific stop rather than a random one, aligning with transit APIs for accurate schedules (sample schedules until a Google API key is added). For the commute math, the total time equals your arrive by time minus your departure time, meaning early arrival is accurately counted as commute time. True cost is calculated by adding rent and estimated utilities based on square footage, season, and heating type. The Bathroom Detective compares the listed count against verified data where a half bath equals 0.5. It raises a red flag if the numbers do not match.</p>
 
   <h3>Architecture</h3>
   <div class="diagram">
